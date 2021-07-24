@@ -16,7 +16,7 @@ def maxContour(contours):
 
 def getCorners(max_cnt):
     """Returns the edges of the contour if the approx polygon is a quadrilateral"""
-    perimeter = cv2.arcLength(max_cnt,True)
+    perimeter = cv2.arcLength(max_cnt, True)
     epsilon = 0.1 * perimeter
     approx = cv2.approxPolyDP(max_cnt, epsilon, True)
     #print(approx)
@@ -35,23 +35,25 @@ def getCorners(max_cnt):
         #img_contours = cv2.cvtColor(img_persp, cv2.COLOR_BGR2GRAY)
     return img_persp
 
-def predict_all_grid(cell_grid):
-    "Returns a list of prediction for each cell"
-    prediction_array = []
-    for row in cell_grid:
-        for cell in row:
-            prediction = predict_digit(cell)
-            prediction_array.append(prediction)
-    return prediction_array
 
-def predict_digit(cell):
-    "Returns prediction of a digit for the given cell"
-    #print(model.summary())
-    if np.sum(cell) < 6000:
-        return np.nan
-    #gray = cv2.cvtColor(im_4, cv2.COLOR_BGR2GRAY)
-    cell = np.reshape(cell, (1, 28, 28, 1))
-    return model.predict_classes(cell)
+def grid_to_batch(cell_grid):
+    """Takes an array of each image cell and return a single batch for ML prediction. Also returns estimated empty cells"""
+    cell_batch = np.empty([0, 28, 28, 1])
+    empty_filter = np.ones(81)
+    for i, row in enumerate(cell_grid):
+        for j, cell in enumerate(row):
+            cell_batch = np.append(cell_batch, cell.reshape(1, 28, 28, 1), axis=0)
+            if np.sum(cell) < 10000:
+                empty_filter[i*9 + j] = 0
+    return cell_batch, empty_filter
+
+
+def predict_batch(cell_batch, empty_filter):
+    """Predicts the digits for the given mask and returns it after replacing empty cells with zeroes"""
+    predictions_raw = model.predict_classes(cell_batch)
+    predictions = predictions_raw * empty_filter
+    return predictions
+
 
 vid = cv2.VideoCapture(0)
 model = load_model('model_mnist')
@@ -93,14 +95,11 @@ while True:
                 row.append(image_contours[3+i*34:31+i*34, 3+j*34:31+j*34])
             cell_grid.append(row)
 
-        #print(len(cell_grid),len(cell_grid[0]),len(cell_grid[0][0]),len(cell_grid[0][0][0]),)
         cv2.imshow('cell1', cell_grid[0][1])
-        #temp = cell_grid[0][1]
-        #print(np.sum(temp))
-        #print(predict_digit(cell_grid[0][1]))
-        prediction_array = predict_all_grid(cell_grid)
-        print(prediction_array)
 
+        cell_batch, empty_filter = grid_to_batch(cell_grid)
+        predictions = predict_batch(cell_batch, empty_filter)
+        print(predictions.reshape(9, 9))
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
