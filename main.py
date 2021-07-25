@@ -27,7 +27,7 @@ def getCorners(max_cnt):
         x2, y2, x1, y1, x3, y3, x4, y4 = approx.item(0), approx.item(1), approx.item(2), approx.item(3), approx.item(4), approx.item(5), approx.item(6), approx.item(7)
         boundary_pts = np.float32([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
 
-        width, height = 306, 306
+        width, height = 342, 342
         new_boundary = np.float32([[0,0], [width, 0], [0, height], [width, height]])
 
         persp_mat = cv2.getPerspectiveTransform(boundary_pts, new_boundary)
@@ -43,7 +43,7 @@ def grid_to_batch(cell_grid):
     for i, row in enumerate(cell_grid):
         for j, cell in enumerate(row):
             cell_batch = np.append(cell_batch, cell.reshape(1, 28, 28, 1), axis=0)
-            if np.sum(cell) < 10000:
+            if np.sum(cell) < 15000:
                 empty_filter[i*9 + j] = 0
     return cell_batch, empty_filter
 
@@ -92,7 +92,7 @@ while True:
         for i in range(9):
             row = []
             for j in range(9):
-                row.append(image_contours[3+i*34:31+i*34, 3+j*34:31+j*34])
+                row.append(image_contours[5+i*38:33+i*38, 5+j*38:33+j*38])
             cell_grid.append(row)
 
         cv2.imshow('cell1', cell_grid[0][1])
