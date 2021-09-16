@@ -64,9 +64,9 @@ def write_over(image):
             digit = str(int(predictions[i][j]))
             if digit == '0':
                 continue
-            io = int(l * i / 9 + 27)
-            wo = int(w * j / 9 + 32)
-            image = cv2.putText(image, digit, (io, wo), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            io = int(l * i / 9 + 32)
+            jo = int(w * j / 9 + 27)
+            image = cv2.putText(image, digit, (jo, io), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
     return image
 
 vid = cv2.VideoCapture(0)
@@ -77,7 +77,7 @@ model = load_model('model_temp')
 while True:
     ret, frame = vid.read()
 
-    canny = cv2.Canny(frame, 50, 350)
+    canny = cv2.Canny(frame, 50, 100)
     # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(canny, (3, 3), 0)
     kernel = np.ones((3, 3), np.uint8)
