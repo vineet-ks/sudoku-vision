@@ -22,7 +22,8 @@ for subdir in os.listdir(data_path):
             x = transformed_image.next()
             aug_image = x[0].astype('uint8')
             aug_name = ''.join([img_name[:-4], '__{}.jpg'.format(i)])
-            cv2.imwrite('data/{}/{}'.format(subdir, aug_name), aug_image)
+            aug_path = os.path.join(data_path, subdir, aug_name)
+            cv2.imwrite(aug_path, aug_image)
 """
 image = cv2.imread('/home/enix/PycharmProjects/sudoku_vision/3_33.jpg')
 image = np.expand_dims(image, axis=0)
