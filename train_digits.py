@@ -4,16 +4,7 @@ import numpy as np
 from keras.utils import np_utils
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
-from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
-
-"""
-print(os.listdir("./data"))
-image = cv2.imread("./data/0/00.jpeg")
-cv2.imshow('image', image)
-print(type(image))
-cv2.waitKey()
-cv2.destroyAllWindows()"""
 
 X = []
 y = []
@@ -27,21 +18,13 @@ for number in os.listdir(data_path):
         #_, img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY)
         X.append(img)
 
-"""cv2.imshow('{}'.format(y[980]), X[980])
-cv2.waitKey()
-cv2.destroyAllWindows()
-"""
 X = np.asarray(X)
 X = X/255
 X = X.reshape(X.shape[0], 28, 28, 1)
 y = np.asarray(y)
 y = np_utils.to_categorical(y)
 
-"""cv2.imshow('{}'.format(y[255]), X[255])
-cv2.waitKey()
-cv2.destroyAllWindows()"""
 
-#print(X[0])
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
@@ -57,7 +40,7 @@ model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(num_classes, activation='softmax'))
 
-model.compile(loss='categorical_crossentropy', optimizer=Adam(0.01), metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
 print(model.summary())
 
 batch_size = 32
