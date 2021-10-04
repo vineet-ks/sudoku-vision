@@ -5,18 +5,12 @@ import shutil
 
 
 image = cv2.imread("sudoku_digits_grid.png")
-#gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-#_, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)
 canny = cv2.Canny(image, 50, 350)
 kernel = np.ones((3, 3), np.uint8)
 dilated = cv2.dilate(canny, kernel, iterations=1)
-#kernel = np.ones((3, 3), np.uint8)
-##eroded = cv2.erode(dilated, kernel, iterations=1)
-#img_processed = canny
-#cv2.imshow('dilated', dilated)
-#cv2.waitKey(0)
 
-shutil.rmtree('data')
+if os.path.isdir('data'):
+    shutil.rmtree('data')
 os.mkdir('data')
 for i in range(10):
     os.mkdir('data/{}'.format(i))
@@ -42,4 +36,5 @@ for cnt_elt in contours:
         cv2.imwrite('data/{}/{}_{}.jpg'.format(9 - last_digit, 9 - last_digit, remaining_digit), cell)
         i += 1
 
+print("Data generated in folder 'data'")
 
