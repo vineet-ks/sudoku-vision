@@ -24,6 +24,9 @@ for subdir in os.listdir(data_path):
             aug_name = ''.join([img_name[:-4], '__{}.jpg'.format(i)])
             aug_path = os.path.join(data_path, subdir, aug_name)
             cv2.imwrite(aug_path, aug_image)
+
+print("Data augmentation complete")
+
 """
 image = cv2.imread('/home/enix/PycharmProjects/sudoku_vision/3_33.jpg')
 image = np.expand_dims(image, axis=0)
