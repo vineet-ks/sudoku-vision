@@ -51,7 +51,8 @@ def grid_to_batch(cell_grid):
 
 def predict_batch(cell_batch, empty_filter):
     """Predicts the digits for the given mask and returns it after replacing empty cells with zeroes"""
-    predictions_raw = model.predict_classes(cell_batch)
+    predictions_vectorized = model.predict(cell_batch)
+    predictions_raw = np.argmax(predictions_vectorized, axis=1)
     predictions = predictions_raw * empty_filter
     return predictions
 
@@ -70,7 +71,7 @@ def write_over(image):
     return image
 
 vid = cv2.VideoCapture(0)
-model = load_model('model_temp')
+model = load_model('model')
 
 
 
