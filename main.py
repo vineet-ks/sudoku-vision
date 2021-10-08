@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from keras.models import load_model
+from solver import solve
 
 
 def image_processing_boundary(image):
@@ -87,7 +88,7 @@ def write_over(image):
     # print(l, w)
     for i in range(9):
         for j in range(9):
-            digit = str(int(predictions[i][j]))
+            digit = str(int(pred_reshaped[i][j]))
             if digit == '0':
                 continue
             io = int(l * i / 9 + 32)
@@ -129,12 +130,22 @@ while True:
 
         cell_batch, empty_filter = grid_to_batch(cell_grid)
         predictions = predict_batch(cell_batch, empty_filter)
-        predictions = predictions.reshape(9, 9)
-        print(predictions)
+        pred_reshaped = predictions.reshape(9, 9)
+        print(pred_reshaped)
+
 
         frame_persp = cv2.warpPerspective(frame, persp_mat, (342, 342))
         image_write_over = write_over(frame_persp)
         cv2.imshow("write_over", image_write_over)
+
+        pred_formatted = np.array2string(predictions.astype('int'), separator='')
+        pred_formatted = pred_formatted[1:-1]
+        solution = solve(pred_formatted)
+
+
+        if solution:
+            print(solution.values())
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
