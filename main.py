@@ -20,8 +20,8 @@ def image_processing_digits(image):
     """Returns input image after processing for digit recognition"""
     image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     image = cv2.GaussianBlur(image, (3, 3), 0)
-    _, image = cv2.threshold(image, 0, 255, cv2.THRESH_OTSU)
-    image = cv2.bitwise_not(image)
+    image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 21, 10)
+    #image = cv2.bitwise_not(image)
     return image
 
 
