@@ -96,6 +96,17 @@ def write_over(image):
             image = cv2.putText(image, digit, (jo, io), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
     return image
 
+def draw_over_predictions(image):
+    l, w, _ = image.shape
+    for i in range(9):
+        for j in range(9):
+            sol_digit = sol_reshaped[i][j]
+            pred_digit = str(int(pred_reshaped[i][j]))
+            if pred_digit == '0':
+                io = int(l * i / 9 + 28)
+                jo = int(w * j / 9 + 12)
+                image = cv2.putText(image, sol_digit, (jo, io), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+    return image
 
 vid = cv2.VideoCapture(0)
 model = load_model('model')
@@ -145,6 +156,10 @@ while True:
 
         if solution:
             print(solution.values())
+            sol_reshaped = np.asarray(list(solution.values())).reshape(9, 9)
+            sol_write_over = draw_over_predictions(image_write_over)
+            cv2.imshow("sol_write_over", sol_write_over)
+            #print(np.fromiter(solution.values(), dtype=str))
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
