@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from keras.models import load_model
-from solver import solve
+import solver
 
 
 def image_processing_boundary(image):
@@ -43,9 +43,6 @@ def getCorners(max_cnt):
     perimeter = cv2.arcLength(max_cnt, True)
     epsilon = 0.1 * perimeter
     approx = cv2.approxPolyDP(max_cnt, epsilon, True)
-    # print(approx)
-    # print(len(approx))
-    # print("-----")
     img_persp = None
     persp_mat = None
     if len(approx) == 4:
@@ -85,7 +82,6 @@ def predict_batch(cell_batch, empty_filter):
 def write_over(image):
     print(type(image))
     l, w, _ = image.shape
-    # print(l, w)
     for i in range(9):
         for j in range(9):
             digit = str(int(pred_reshaped[i][j]))
@@ -151,7 +147,7 @@ while True:
 
         pred_formatted = np.array2string(predictions.astype('int'), separator='')
         pred_formatted = pred_formatted[1:-1]
-        solution = solve(pred_formatted)
+        solution = solver.solve(pred_formatted)
 
 
         if solution:
