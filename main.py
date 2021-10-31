@@ -43,20 +43,14 @@ def getCorners(max_cnt):
     perimeter = cv2.arcLength(max_cnt, True)
     epsilon = 0.1 * perimeter
     approx = cv2.approxPolyDP(max_cnt, epsilon, True)
-    img_persp = None
-    persp_mat = None
+    boundary_pts = None
+
     if len(approx) == 4:
         x2, y2, x1, y1, x3, y3, x4, y4 = approx.item(0), approx.item(1), approx.item(2), approx.item(3), approx.item(
             4), approx.item(5), approx.item(6), approx.item(7)
         boundary_pts = np.float32([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
 
-        width, height = 342, 342
-        new_boundary = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
-
-        persp_mat = cv2.getPerspectiveTransform(boundary_pts, new_boundary)
-        img_persp = cv2.warpPerspective(img_processed_digits, persp_mat, (width, height))  # Using eroded
-        # img_contours = cv2.cvtColor(img_persp, cv2.COLOR_BGR2GRAY)
-    return img_persp, persp_mat
+    return boundary_pts
 
 
 def grid_to_batch(cell_grid):
@@ -119,7 +113,12 @@ while True:
     image_contours = None
     if max_contour is not None:
         cv2.drawContours(frame, max_contour, -1, (0, 0, 255), 2)
-        image_contours, persp_mat = getCorners(max_contour)
+        boundary_pts = getCorners(max_contour)
+        if boundary_pts is not None:
+            width, height = 342, 342
+            new_boundary = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
+            persp_mat = cv2.getPerspectiveTransform(boundary_pts, new_boundary)
+            image_contours = cv2.warpPerspective(img_processed_digits, persp_mat, (width, height))
 
     cv2.imshow('img_processed_boundary', img_processed_boundary)
     cv2.imshow('frame', frame)
