@@ -76,6 +76,7 @@ def predict_batch(cell_batch, empty_filter):
 def write_over(image):
     print(type(image))
     l, w, _ = image.shape
+    #image = np.zeros((image.shape), dtype=np.uint8)
     for i in range(9):
         for j in range(9):
             digit = str(int(pred_reshaped[i][j]))
@@ -87,6 +88,7 @@ def write_over(image):
     return image
 
 def draw_over_predictions(image):
+    #black = np.zeros((342, 342), dtype=np.uint8)
     l, w, _ = image.shape
     for i in range(9):
         for j in range(9):
@@ -155,6 +157,12 @@ while True:
             sol_write_over = draw_over_predictions(image_write_over)
             cv2.imshow("sol_write_over", sol_write_over)
             #print(np.fromiter(solution.values(), dtype=str))
+
+            persp_mat = cv2.getPerspectiveTransform(new_boundary, boundary_pts)
+            sol_warped = cv2.warpPerspective(sol_write_over, persp_mat, (frame.shape[1], frame.shape[0]))
+            sol_warp_overlayed = cv2.max(sol_warped, frame)
+            cv2.imshow("sol_warp_overlayed", sol_warp_overlayed)
+            #print(frame.shape)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
