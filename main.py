@@ -73,7 +73,7 @@ def predict_batch(cell_batch, empty_filter):
     return predictions
 
 
-def write_over(image):
+def draw_over_predictions(image):
     print(type(image))
     l, w, _ = image.shape
     #image = np.zeros((image.shape), dtype=np.uint8)
@@ -87,7 +87,7 @@ def write_over(image):
             image = cv2.putText(image, digit, (jo, io), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
     return image
 
-def draw_over_predictions(image):
+def draw_over_solution(image):
     #black = np.zeros((342, 342), dtype=np.uint8)
     l, w, _ = image.shape
     for i in range(9):
@@ -143,7 +143,7 @@ while True:
 
 
         frame_persp = cv2.warpPerspective(frame, persp_mat, (342, 342))
-        image_write_over = write_over(frame_persp)
+        image_write_over = draw_over_predictions(frame_persp)
         cv2.imshow("write_over", image_write_over)
 
         pred_formatted = np.array2string(predictions.astype('int'), separator='')
@@ -154,7 +154,7 @@ while True:
         if solution:
             print(solution.values())
             sol_reshaped = np.asarray(list(solution.values())).reshape(9, 9)
-            sol_write_over = draw_over_predictions(image_write_over)
+            sol_write_over = draw_over_solution(image_write_over)
             cv2.imshow("sol_write_over", sol_write_over)
             #print(np.fromiter(solution.values(), dtype=str))
 
