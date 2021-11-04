@@ -6,14 +6,14 @@ import solver
 
 def image_processing_boundary(image):
     """Returns input image after processing for sudoku boundary detection"""
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image = cv2.GaussianBlur(image, (3, 3), 0)
-    image = cv2.Canny(image, 50, 100)
-    """image = cv2.GaussianBlur(image, (3, 3), 0)
-    kernel = np.ones((3, 3), np.uint8)
-    image = cv2.dilate(image, kernel, iterations=1)
-    kernel = np.ones((4, 4), np.uint8)
-    image = cv2.erode(image, kernel, iterations=1)
-    _, image = cv2.threshold(image, 0, 255, cv2.THRESH_OTSU)"""
+    """m = np.median(image)
+    sigma = 0.33
+    lower = int(max(0, (1.0 - sigma) * m))
+    upper = int(min(255, (1.0 + sigma) * m))"""
+    image = cv2.Canny(image, 35, 70)
+
     return image
 
 
