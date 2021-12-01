@@ -28,6 +28,9 @@ def image_processing_digits(image):
 
 def maxContour(contours):
     """Returns the contour with maximum area, if any"""
+    if not contours:
+        return None
+
     areas = [cv2.contourArea(x) for x in contours]
     max_index = np.argmax(areas)
     max_cnt = contours[max_index]
